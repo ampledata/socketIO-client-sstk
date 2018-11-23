@@ -177,8 +177,12 @@ def format_packet(packet_type, packet_data):
 
 
 def parse_packet(packet_text):
+    # for openmhz's weird b'' empty packet
+    if isinstance(packet_text, six.binary_type) and len(packet_text) < 2:
+        packet_type = ''
+        packet_data = ''
     # 'b' --> binary base64 encoded packet
-    if isinstance(packet_text, six.binary_type) and six.byte2int(packet_text[0:1]) == 98:
+    elif isinstance(packet_text, six.binary_type) and six.byte2int(packet_text[0:1]) == 98:
         packet_text = packet_text[1:]
         packet_type = get_int(packet_text, 0)
         packet_data = b64decode(packet_text[1:])
